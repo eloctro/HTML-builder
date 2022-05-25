@@ -4,14 +4,21 @@ const fs = require("fs");
 const path = require("path");
 const readline = require("readline");
 
-async function readFile(filePath) {
-    try {
-      const data = await fs.readFile(filePath);
-      console.log(data.toString());
-    } catch (err) {
-      console.log(err);
-    }
-  }
+// let rsArticles = fs.createReadStream(
+//   path.join(__dirname, "components", "articles.html")
+// );
+
+// let rsFooter = fs.createReadStream(
+//   path.join(__dirname, "components", "footer.html")
+// );
+// async function readFile(filePath) {
+//     try {
+//       const data = await fs.readFile(filePath);
+//       console.log(data.toString());
+//     } catch (err) {
+//       console.log(err);
+//     }
+//   }
 
 const reader = readline.createInterface({
   input: fs.createReadStream(path.join(__dirname, "template.html")),
@@ -34,7 +41,6 @@ reader.on("line", (line) => {
     // let rsHeader = fs.createReadStream(
     //   path.join(__dirname, "components", "header.html")
     // );
-
     // rsHeader.on("data", (chunk) => {
     //   fs.appendFile(
     //     path.join(__dirname, "project-dist", "index.html"),
@@ -61,38 +67,56 @@ reader.on("line", (line) => {
     //     );
     //   }
     // );
-    readFile();
-
+    // readFile();
   } else if (line.includes("{{articles}}")) {
-    let rsArticles = fs.createReadStream(
-      path.join(__dirname, "components", "articles.html")
-    );
-    rsArticles.on("data", (chunk) => {
-      fs.appendFile(
-        path.join(__dirname, "project-dist", "index.html"),
-        `${chunk.toString()}\n`,
-        (err) => {
-          if (err) {
-            throw err;
+    fs.readFile(
+      path.join(__dirname, "components", "articles.html"),
+      "utf-8",
+      (err, file) => {
+        if (err) throw err;
+        console.log(file);
+        fs.appendFile(
+          path.join(__dirname, "project-dist", "index.html"),
+          `${file}\n`,
+          (err) => {
+            if (err) {
+              throw err;
+            }
           }
-        }
-      );
-    });
+        );
+      }
+    );
+
+    // rsArticles.on("data", (chunk) => {});
   } else if (line.includes("{{footer}}")) {
-    let rsFooter = fs.createReadStream(
-      path.join(__dirname, "components", "footer.html")
-    );
-    rsFooter.on("data", (chunk) => {
-      fs.appendFile(
-        path.join(__dirname, "project-dist", "index.html"),
-        `${chunk.toString()}\n`,
-        (err) => {
-          if (err) {
-            throw err;
+        fs.readFile(
+          path.join(__dirname, "components", "footer.html"),
+          "utf-8",
+          (err, file) => {
+            if (err) throw err;
+            console.log(file);
+            fs.appendFile(
+              path.join(__dirname, "project-dist", "index.html"),
+              `${file}\n`,
+              (err) => {
+                if (err) {
+                  throw err;
+                }
+              }
+            );
           }
-        }
-      );
-    });
+        );
+    // rsFooter.on("data", (chunk) => {
+    //   fs.appendFile(
+    //     path.join(__dirname, "project-dist", "index.html"),
+    //     `${chunk.toString()}\n`,
+    //     (err) => {
+    //       if (err) {
+    //         throw err;
+    //       }
+    //     }
+    //   );
+    // });
   } else {
     // console.log(line);
     fs.appendFile(
