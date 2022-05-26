@@ -1,4 +1,5 @@
 const fs = require("fs");
+const { basename } = require("path");
 const path = require("path");
 
 fs.readdir(
@@ -12,11 +13,12 @@ fs.readdir(
           path.join(__dirname, "secret-folder", element.name),
           (err, stats) => {
             if (err) throw err;
-            let file = element.name.split(".");
+            let fileName = path.parse(
+              `D:\\JSFE_2022Q1\\projects\\HTML-builder\\03-files-in-folder\\secret-folder\\${element.name}`
+            ).name;
+            let ext = element.name.split(".")
             console.log(
-              `${file[0]} - ${file[file.length - 1]} - ${(
-                stats.size / 1024
-              ).toFixed(2)}kb`
+              `${fileName} - ${ext[ext.length-1]} - ${(stats.size / 1024).toFixed(2)}kb`
             );
           }
         );
