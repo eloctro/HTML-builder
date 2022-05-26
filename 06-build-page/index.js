@@ -3,6 +3,7 @@ const fs = require("fs");
 // const fs = require('fs').promises;
 const path = require("path");
 const readline = require("readline");
+let arr = [];
 
 // let rsArticles = fs.createReadStream(
 //   path.join(__dirname, "components", "articles.html")
@@ -19,6 +20,22 @@ const readline = require("readline");
 //       console.log(err);
 //     }
 //   }
+const readableStream = fs.createReadStream(path.join(__dirname, "template.html"));
+const rsHeader = fs.createReadStream(path.join(__dirname, 'components', 'header.html'))
+
+readableStream.on("data", (chunk) => {
+  arr = chunk.toString().split('\n');
+  arr.forEach(element => {
+    if (element.includes("{{header}}")) {
+      rsHeader.on("data", (chunk) => {
+        console.log(chunk.toString());
+      })
+      console.log(element);
+    }
+  });
+});
+
+
 
 const reader = readline.createInterface({
   input: fs.createReadStream(path.join(__dirname, "template.html")),
@@ -74,7 +91,7 @@ reader.on("line", (line) => {
       "utf-8",
       (err, file) => {
         if (err) throw err;
-        console.log(file);
+        // console.log(file);
         fs.appendFile(
           path.join(__dirname, "project-dist", "index.html"),
           `${file}\n`,
@@ -94,7 +111,7 @@ reader.on("line", (line) => {
           "utf-8",
           (err, file) => {
             if (err) throw err;
-            console.log(file);
+            // console.log(file);
             fs.appendFile(
               path.join(__dirname, "project-dist", "index.html"),
               `${file}\n`,
